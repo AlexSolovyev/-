@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.link {
+  fill: none;
+  stroke: #666;
+  stroke-width: 1.5px;
+}
+
+#licensing {
+  fill: blue;
+}
+
+.link.licensing {
+  stroke: Red;
+}
+
+.link.resolved {
+  stroke-dasharray: 0,2 1;
+}
+
+circle {
+  fill: #ccc;
+  stroke: #333;
+  stroke-width: 1.5px;
+}
+
+text {
+  font: 10px sans-serif;
+  pointer-events: none;
+  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+}
+
+</style>
+<body>
+<script src="//d3js.org/d3.v3.min.js"></script>
+<script>
+
+var links = [
+{'source': 'townsman', 'target': 'minskblog', 'type': 'licensing'} ,
+{'source': 'minskblog', 'target': 'townsman', 'type': 'licensing'} ,
+{'source': 'ab_dachshund', 'target': 'townsman', 'type': 'licensing'} ,
+{'source': 'townsman', 'target': 'ab_dachshund', 'type': 'licensing'} ,
+{'source': 'ab_dachshund', 'target': 'townsman', 'type': 'licensing'} ,
+{'source': 'kouros99', 'target': 'townsman', 'type': 'licensing'} ,
+{'source': 'son_black', 'target': 'minskblog', 'type': 'licensing'} ,
+{'source': 'townsman', 'target': 'lk55lk', 'type': 'licensing'} ,
+{'source': 'g_bukin', 'target': 'townsman', 'type': 'licensing'} ,
+{'source': 'kwakin_misha', 'target': 'g_bukin', 'type': 'licensing'} ,
+{'source': 'townsman', 'target': 'tina_luchina', 'type': 'licensing'} ,
+{'source': 'tina_luchina', 'target': 'townsman', 'type': 'licensing'} ,
+{'source': 'townsman', 'target': 'tina_luchina', 'type': 'licensing'} ,
+{'source': 'lica_alica', 'target': 'townsman', 'type': 'licensing'} ,
+{'source': 'townsman', 'target': 'lica_alica', 'type': 'licensing'} ,
+{'source': 'tina_luchina', 'target': 'townsman', 'type': 'licensing'} ,
+{'source': 'townsman', 'target': 'tina_luchina', 'type': 'licensing'} ,
+{'source': 'elena_kolbasa', 'target': 'townsman', 'type': 'licensing'} ,
+{'source': 'townsman', 'target': 'elena_kolbasa', 'type': 'licensing'} ,
+{'source': 'elena_kolbasa', 'target': 'townsman', 'type': 'licensing'} ,
+{'source': 'tina_luchina', 'target': 'townsman', 'type': 'licensing'} ,
+{'source': 'lica_alica', 'target': 'townsman', 'type': 'licensing'} ,
+{'source': 'diana_spb', 'target': 'townsman', 'type': 'licensing'} ,
+{'source': 'townsman', 'target': 'marinamariha', 'type': 'licensing'} ,
+{'source': 'holyboyarishnik', 'target': 'townsman', 'type': 'licensing'} ,
+{'source': 'townsman', 'target': 'holyboyarishnik', 'type': 'licensing'} ,
+{'source': 'lenorlux', 'target': 'townsman', 'type': 'licensing'} ,
+{'source': 'townsman', 'target': 'lenorlux', 'type': 'licensing'} ,
+{'source': 'lenorlux', 'target': 'townsman', 'type': 'licensing'} ,
+{'source': 'takoe_nebo', 'target': 'nikolay_suslov', 'type': 'licensing'} ,
+{'source': 'ext_3919313', 'target': 'takoe_nebo', 'type': 'licensing'} ,
+{'source': 'takoe_nebo', 'target': 'ext_3919313', 'type': 'licensing'} ,
+{'source': 'atrizno', 'target': 'nikolay_suslov', 'type': 'licensing'} ,
+{'source': 'ext_521877', 'target': 'nikolay_suslov', 'type': 'licensing'} ,
+{'source': 'nikolay_suslov', 'target': 'ext_521877', 'type': 'licensing'} ,
+{'source': 'old_extremist', 'target': 'nikolay_suslov', 'type': 'licensing'} ,
+{'source': 'nemurchik', 'target': 'nikolay_suslov', 'type': 'licensing'} ,
+{'source': 'ventx', 'target': 'nemurchik', 'type': 'licensing'} ,
+{'source': 'nikolay_suslov', 'target': 'nemurchik', 'type': 'licensing'} ,
+{'source': 'townsman', 'target': 'ventx', 'type': 'licensing'} ,
+{'source': 'agatspb', 'target': 'nikolay_suslov', 'type': 'licensing'} ,
+{'source': 'nikolay_suslov', 'target': 'nikolay_suslov', 'type': 'licensing'} ,
+{'source': 'agatspb', 'target': 'agatspb', 'type': 'licensing'} ,
+{'source': 'salvator_vals', 'target': 'nikolay_suslov', 'type': 'licensing'} ,
+{'source': 'cavallo_blu2', 'target': 'nikolay_suslov', 'type': 'licensing'} ,
+{'source': 'blaster2009', 'target': 'salvator_vals', 'type': 'licensing'} ,
+{'source': 'elena_kolbasa', 'target': 'blaster2009', 'type': 'licensing'} ,
+{'source': 'townsman', 'target': 'elena_kolbasa', 'type': 'licensing'} ,
+{'source': 'townsman', 'target': 'townsman', 'type': 'licensing'} ,
+{'source': 'vikont_ic', 'target': 'arbitr57', 'type': 'licensing'} ,
+{'source': 'townsman', 'target': 'townsman', 'type': 'licensing'} ,
+{'source': 'amak_190', 'target': 'vikont_ic', 'type': 'licensing'} ,
+{'source': 'townsman', 'target': 'townsman', 'type': 'licensing'} ,
+{'source': 'townsman', 'target': 'townsman', 'type': 'licensing'} ,
+{'source': 'ruslanviktorov', 'target': 'amak_190', 'type': 'licensing'} ,
+{'source': 'mr_razdobarin', 'target': 'townsman', 'type': 'licensing'} ,
+{'source': 'townsman', 'target': 'mr_razdobarin', 'type': 'licensing'} ,
+{'source': 'townsman', 'target': 'townsman', 'type': 'licensing'} ,
+{'source': 'gal_an', 'target': 'tvsher', 'type': 'licensing'} ,
+{'source': 'townsman', 'target': 'townsman', 'type': 'licensing'} ,
+{'source': 'townsman', 'target': 'townsman', 'type': 'licensing'} ,
+{'source': 'orion4', 'target': 'gal_an', 'type': 'licensing'} ,
+{'source': 'orion4', 'target': 'orion4', 'type': 'licensing'} ,
+{'source': 'bozirina', 'target': 'townsman', 'type': 'licensing'} ,
+{'source': 'nemurchik', 'target': 'orion4', 'type': 'licensing'} ,
+{'source': 'townsman', 'target': 'bozirina', 'type': 'licensing'} ,
+{'source': 'nemurchik', 'target': 'nemurchik', 'type': 'licensing'} ,
+{'source': 'townsman', 'target': 'townsman', 'type': 'licensing'} ,
+{'source': 'townsman', 'target': 'townsman', 'type': 'licensing'} ,
+{'source': 'k_markarian', 'target': 'nemurchik', 'type': 'licensing'} ,
+{'source': 'townsman', 'target': 'townsman', 'type': 'licensing'} ,
+{'source': 'k_markarian', 'target': 'k_markarian', 'type': 'licensing'} ,
+{'source': 'townsman', 'target': 'nemurchik', 'type': 'licensing'} ,
+{'source': 'a4inka', 'target': 'townsman', 'type': 'licensing'} ,
+{'source': 'luvida', 'target': 'townsman', 'type': 'licensing'} ,
+{'source': 'greider1984', 'target': 'luvida', 'type': 'licensing'} ,
+{'source': 'twanger', 'target': 'townsman', 'type': 'licensing'} ,
+{'source': 'townsman', 'target': 'greider1984', 'type': 'licensing'} ,
+{'source': 'livejournal', 'target': 'twanger', 'type': 'licensing'} ,
+{'source': 'afroukrainec', 'target': 'townsman', 'type': 'licensing'} ,
+{'source': 'carina_marina', 'target': 'livejournal', 'type': 'licensing'} ,
+{'source': 'afroukrainec', 'target': 'afroukrainec', 'type': 'licensing'} ,
+{'source': 'carina_marina', 'target': 'carina_marina', 'type': 'licensing'} ,
+{'source': 'townsman', 'target': 'carina_marina', 'type': 'licensing'} ,
+{'source': 'townsman', 'target': 'townsman', 'type': 'licensing'} ,
+{'source': 'townsman', 'target': 'townsman', 'type': 'licensing'}
+];
+
+var nodes = {};
+
+links.forEach(function(link) {
+  link.source = nodes[link.source] || (nodes[link.source] = {name: link.source});
+  link.target = nodes[link.target] || (nodes[link.target] = {name: link.target});
+});
+
+var width = 800,
+    height = 700;
+
+var force = d3.layout.force()
+    .nodes(d3.values(nodes))
+    .links(links)
+    .size([width, height])
+    .linkDistance(60)
+    .charge(-300)
+    .on("tick", tick)
+    .start();
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+svg.append("defs").selectAll("marker")
+    .data(["suit", "licensing", "resolved"])
+  .enter().append("marker")
+    .attr("id", function(d) { return d; })
+    .attr("viewBox", "0 -5 10 10")
+    .attr("refX", 15)
+    .attr("refY", -1.5)
+    .attr("markerWidth", 6)
+    .attr("markerHeight", 6)
+    .attr("orient", "auto")
+  .append("path")
+    .attr("d", "M0,-5L10,0L0,5");
+
+var path = svg.append("g").selectAll("path")
+    .data(force.links())
+  .enter().append("path")
+    .attr("class", function(d) { return "link " + d.type; })
+    .attr("marker-end", function(d) { return "url(#" + d.type + ")"; });
+
+var circle = svg.append("g").selectAll("circle")
+    .data(force.nodes())
+  .enter().append("circle")
+    .attr("r", 6)
+    .call(force.drag);
+
+var text = svg.append("g").selectAll("text")
+    .data(force.nodes())
+  .enter().append("text")
+    .attr("x", 8)
+    .attr("y", ".31em")
+    .text(function(d) { return d.name; });
+
+function tick() {
+  path.attr("d", linkArc);
+  circle.attr("transform", transform);
+  text.attr("transform", transform);
+}
+
+function linkArc(d) {
+  var dx = d.target.x - d.source.x,
+      dy = d.target.y - d.source.y,
+      dr = Math.sqrt(dx * dx + dy * dy);
+  return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
+}
+
+function transform(d) {
+  return "translate(" + d.x + "," + d.y + ")";
+}
+
+</script>
+
